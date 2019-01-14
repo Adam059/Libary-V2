@@ -1,7 +1,32 @@
-﻿
+﻿@model Library.Web.Models.RegisterDto
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Register";
 }
 
-<h2>Index</h2>
+<section>
+    <h2>Register new account</h2>
+</section>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="Register">
+            <div class="form-group">
+                <label class="control-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Password</label>
+                <input asp-for="Password" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">ConfirmPassword</label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" value="Register" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
 

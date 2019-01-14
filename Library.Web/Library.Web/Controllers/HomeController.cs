@@ -1,9 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Library.Web.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly LibraryContext _context;
+
+        public HomeController(LibraryContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();

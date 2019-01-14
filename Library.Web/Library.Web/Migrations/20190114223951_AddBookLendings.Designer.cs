@@ -3,14 +3,16 @@ using System;
 using Library.Web.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Library.Web.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20190114223951_AddBookLendings")]
+    partial class AddBookLendings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,8 +27,6 @@ namespace Library.Web.Migrations
                     b.Property<string>("Author");
 
                     b.Property<string>("Description");
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Name");
 
@@ -48,7 +48,7 @@ namespace Library.Web.Migrations
 
                     b.Property<DateTime>("DateFrom");
 
-                    b.Property<DateTime?>("DateTo");
+                    b.Property<DateTime>("DateTo");
 
                     b.Property<int>("OwnerId");
 
@@ -58,7 +58,7 @@ namespace Library.Web.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("BookLendings");
+                    b.ToTable("BookLending");
                 });
 
             modelBuilder.Entity("Library.Web.Entities.User", b =>

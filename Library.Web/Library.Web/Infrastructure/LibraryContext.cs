@@ -11,6 +11,7 @@ namespace Library.Web.Infrastructure
 
         public DbSet<Book> Books { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<BookLending> BookLendings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,18 @@ namespace Library.Web.Infrastructure
             // User 
             modelBuilder.Entity<User>()
                 .HasKey(x => x.UserId);
+
+            // BookLending
+            modelBuilder.Entity<BookLending>()
+                .HasKey(x => x.BookLendingId);
+            modelBuilder.Entity<BookLending>()
+                .HasOne(x => x.Owner)
+                .WithMany(x => x.BookLendings)
+                .HasForeignKey(x => x.OwnerId);
+            modelBuilder.Entity<BookLending>()
+                .HasOne(x => x.Book)
+                .WithMany(x => x.BookLendings)
+                .HasForeignKey(x => x.BookId);
         }
     }
 }

@@ -25,7 +25,12 @@ namespace Library.Web.Controllers
             }).ToList();
             return View(books);
         }
+        public IActionResult Create()
+        {
+            return View(new BookDto());
+        }
 
+        [HttpPost]
         public IActionResult Create(BookDto model)
         {
             var newBook = new Book

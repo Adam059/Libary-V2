@@ -20,7 +20,7 @@ namespace Library.Web.Controllers
         }
 
         [HttpPost]
-        public void Register(RegisterDto model)
+        public IActionResult Register(RegisterDto model)
         {
             if (model.Password != model.ConfirmPassword)
                 return View("Register", new RegisterDto());

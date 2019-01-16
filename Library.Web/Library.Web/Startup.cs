@@ -27,6 +27,7 @@ namespace Library.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddDbContext<LibraryContext>(options =>
                     options.UseMySql("Server=localhost;Database=Library;User Id=root; Password=admin;"));

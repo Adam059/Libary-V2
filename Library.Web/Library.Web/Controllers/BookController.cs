@@ -2,6 +2,7 @@
 using Library.Web.Infrastructure;
 using Library.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
 
@@ -33,15 +34,19 @@ namespace Library.Web.Controllers
         [HttpPost]
         public IActionResult Create(BookDto model)
         {
+            var user = Request.Cookies["name"];
+            var pwd = Request.Cookies["pwd"];
+            var userId = _context.Users.Where(x => x.Name == user && x.Password == pwd).Select(x => x.UserId).First();
             var newBook = new Book
             {
                 Author = model.Author,
                 Description = model.Description,
-                Name = model.Name
+                Name = model.Name,
+                OwnerId = userId
             };
             _context.Books.Add(newBook);
             _context.SaveChanges();
-            return View();
+            return View("Index");
         }
 
         public IActionResult Edit(BookDto model)

@@ -1,6 +1,8 @@
 ﻿using Library.Web.Infrastructure;
 using Library.Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace Library.Web.Controllers
@@ -26,6 +28,12 @@ namespace Library.Web.Controllers
             if (!isUserCorrect)
                 return RedirectToAction("FailedLogin", "Error");
 
+            CookieOptions option = new CookieOptions
+            {
+                Expires = DateTime.Now.AddMinutes(120)
+            };
+            Response.Cookies.Append("pwd", model.Password, option);
+            Response.Cookies.Append("name", model.Name, option);
             return RedirectToAction("Index", "Book");
         }
     }

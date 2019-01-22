@@ -13,8 +13,6 @@ namespace Library.Entities
             BookLendings = new HashSet<BookLending>();
         }
 
-        public string Name { get; set; }
-        public string Password { get; set; }
         public virtual ICollection<Book> Books { get; set; }
         public virtual ICollection<BookLending> BookLendings { get; set; }
     }

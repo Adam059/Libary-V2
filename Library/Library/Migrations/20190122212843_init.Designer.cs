@@ -3,14 +3,16 @@ using System;
 using Library.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Library.Data.Migrations
+namespace Library.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190122212843_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,11 +32,9 @@ namespace Library.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("OwnerId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("BookId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Books");
                 });
@@ -50,57 +50,13 @@ namespace Library.Data.Migrations
 
                     b.Property<DateTime?>("DateTo");
 
-                    b.Property<string>("OwnerId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("BookLendingId");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("OwnerId");
-
                     b.ToTable("BookLendings");
-                });
-
-            modelBuilder.Entity("Library.Entities.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
-
-                    b.Property<string>("ConcurrencyStamp");
-
-                    b.Property<string>("Email");
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("Password");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -264,23 +220,12 @@ namespace Library.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Library.Entities.Book", b =>
-                {
-                    b.HasOne("Library.Entities.User", "Owner")
-                        .WithMany("Books")
-                        .HasForeignKey("OwnerId");
-                });
-
             modelBuilder.Entity("Library.Entities.BookLending", b =>
                 {
                     b.HasOne("Library.Entities.Book", "Book")
                         .WithMany("BookLendings")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Library.Entities.User", "Owner")
-                        .WithMany("BookLendings")
-                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

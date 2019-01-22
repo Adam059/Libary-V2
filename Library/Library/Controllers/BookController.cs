@@ -20,6 +20,7 @@ namespace Library.Controllers
         {
             var books = _context.Books.Select(x => new BookDto
             {
+                BookId = x.BookId,
                 Author = x.Author,
                 Description = x.Description,
                 Name = x.Name
@@ -34,21 +35,34 @@ namespace Library.Controllers
         [HttpPost]
         public IActionResult Create(BookDto model)
         {
-            var user = Request.Cookies["name"];
-            var pwd = Request.Cookies["pwd"];
-            var userId = _context.Users.Where(x => x.Name == user && x.Password == pwd).Select(x => x.Id).First();
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
             var newBook = new Book
             {
                 Author = model.Author,
                 Description = model.Description,
                 Name = model.Name,
-                //OwnerId = model.
+                UserId = userId
             };
             _context.Books.Add(newBook);
             _context.SaveChanges();
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var model = _context.Books.Where(x => x.BookId == id)
+                .Select(x => new BookDto
+                {
+                    Author = x.Author,
+                    BookId = x.BookId,
+                    Description = x.Description,
+                    Name = x.Name
+                }).First();
+            return View("Create", model);
+        }
+
+        [HttpPost]
         public IActionResult Edit(BookDto model)
         {
             var editedBook = _context.Books.Where(x => x.BookId == model.BookId).First();
@@ -56,18 +70,18 @@ namespace Library.Controllers
             editedBook.Description = model.Description;
             editedBook.Name = model.Name;
             _context.SaveChanges();
-            return View();
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Borrow(int bookId)
+        public IActionResult Borrow(int id)
         {
             var userId = 1; // TODO
             var newLending = new BookLending
             {
-               // BookId = bookId,
+                // BookId = bookId,
                 DateFrom = DateTime.Now,
                 DateTo = null,
-               // OwnerId = userId
+                // OwnerId = userId
             };
             _context.BookLendings.Add(newLending);
             _context.SaveChanges();

@@ -2,7 +2,6 @@
 using Library.Entities;
 using Library.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
 
@@ -18,13 +17,16 @@ namespace Library.Controllers
 
         public IActionResult Index()
         {
-            var books = _context.Books.Select(x => new BookDto
-            {
-                BookId = x.BookId,
-                Author = x.Author,
-                Description = x.Description,
-                Name = x.Name
-            }).ToList();
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
+            var books = _context.Books
+                .Where(x => !x.IsDeleted && x.UserId == userId)
+                .Select(x => new BookDto
+                {
+                    BookId = x.BookId,
+                    Author = x.Author,
+                    Description = x.Description,
+                    Name = x.Name
+                }).ToList();
             return View(books);
         }
         public IActionResult Create()
@@ -60,6 +62,15 @@ namespace Library.Controllers
                     Name = x.Name
                 }).First();
             return View("Create", model);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var model = _context.Books.Where(x => x.BookId == id).First();
+            model.IsDeleted = true;
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

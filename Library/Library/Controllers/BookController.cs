@@ -25,7 +25,8 @@ namespace Library.Controllers
                     BookId = x.BookId,
                     Author = x.Author,
                     Description = x.Description,
-                    Name = x.Name
+                    Name = x.Name,
+                    Status = x.BookLendings.Any(l => !l.DateTo.HasValue) ? "Wypożyczona" : "Nie wypożyczona"
                 }).ToList();
             return View(books);
         }
@@ -84,26 +85,11 @@ namespace Library.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Borrow(int id)
+        public IActionResult Release(int id)
         {
-            var userId = 1; // TODO
-            var newLending = new BookLending
-            {
-                // BookId = bookId,
-                DateFrom = DateTime.Now,
-                DateTo = null,
-                // OwnerId = userId
-            };
-            _context.BookLendings.Add(newLending);
+            var lending = _context.BookLendings.Where(x => x.BookId == id).First();
+            lending.DateTo = DateTime.Now;
             _context.SaveChanges();
-            return Ok();
-        }
-
-        public IActionResult Release(int bookId)
-        {
-            //var lending = _context.BookLendings.Where(x => x.BookId == bookId).First();
-            //lending.DateTo = DateTime.Now;
-            //_context.SaveChanges();
             return Ok();
         }
     }

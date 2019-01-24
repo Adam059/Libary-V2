@@ -1,5 +1,8 @@
 ﻿using Library.Data;
+using Library.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace Library.Controllers
 {
@@ -13,7 +16,17 @@ namespace Library.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var now = DateTime.Now;
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
+            var model = _context.BookLendings.Where(x => x.UserId == userId)
+                .Select(x => new LendingDto
+                {
+                    BookId = x.BookId,
+                    BookName = $"{x.Book.Name}, {x.Book.Author}",
+                    Days = $"{now.Subtract(x.DateFrom).Days} dni temu",
+                    LendingDate = x.DateFrom.ToShortDateString()
+                }).ToList();
+            return View(model);
         }
 
     }

@@ -1,22 +1,22 @@
-﻿@model IEnumerable<Library.Models.BookDto>
+﻿@model IEnumerable<Library.Models.LendingDto>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Lista dostępnych książek</h2>
+<h2>Lista Twoich wypozyczen</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Książka
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Data wypożyczenia
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                Wypożyczono
             </th>
             <th></th>
         </tr>
@@ -26,16 +26,16 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.BookName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
+                    @Html.DisplayFor(modelItem => item.LendingDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Author)
+                    @Html.DisplayFor(modelItem => item.Days)
                 </td>
                 <td>
-                    <a href="/Home/Borrow?id=@item.BookId">Wypożycz</a>
+                    <a href="/Book/Release?id=@item.BookId">Oddaj książkę</a>
                 </td>
             </tr>
         }

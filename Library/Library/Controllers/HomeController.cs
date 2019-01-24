@@ -1,39 +1,50 @@
-﻿using Library.Models;
+﻿using Library.Data;
+using Library.Entities;
+using Library.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using System;
+using System.Linq;
 
 namespace Library.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
+            var books = _context.Books
+               .Where(x => !x.IsDeleted && x.UserId != userId &&
+               !x.BookLendings.Any(l => !l.DateTo.HasValue))
+               .Select(x => new BookDto
+               {
+                   BookId = x.BookId,
+                   Author = x.Author,
+                   Description = x.Description,
+                   Name = x.Name
+               }).ToList();
+            
+            return View(books);
         }
 
-        public IActionResult About()
+        public IActionResult Borrow(int id)
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
+            var newLending = new BookLending
+            {
+                BookId = id,
+                DateFrom = DateTime.Now,
+                DateTo = null,
+                UserId = userId
+            };
+            _context.BookLendings.Add(newLending);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

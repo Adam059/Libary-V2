@@ -17,6 +17,8 @@ namespace Library.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Identity/Account");
             var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
             var books = _context.Books
                 .Where(x => !x.IsDeleted && x.UserId == userId)

@@ -16,6 +16,8 @@ namespace Library.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Identity/Account");
             var now = DateTime.Now;
             var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
             var model = _context.BookLendings.Where(x => x.UserId == userId)

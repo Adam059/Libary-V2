@@ -1,12 +1,15 @@
 ﻿using Library.Data;
 using Library.Entities;
 using Library.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Library.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,6 +20,8 @@ namespace Library.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Identity/Account");
             var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
             var books = _context.Books
                .Where(x => !x.IsDeleted && x.UserId != userId &&
@@ -28,7 +33,7 @@ namespace Library.Controllers
                    Description = x.Description,
                    Name = x.Name
                }).ToList();
-            
+
             return View(books);
         }
 

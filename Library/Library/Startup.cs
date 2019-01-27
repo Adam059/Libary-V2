@@ -35,8 +35,9 @@ namespace Library
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql("Server=localhost;Database=Library;User Id=root; Password=admin;"));
-            
+            //options.UseMySql("Server=localhost;Database=Library;User Id=root; Password=admin;"));
+            options.UseSqlServer("Server=tcp:libaryv2dbserver.database.windows.net,1433;Initial Catalog=LibaryV2_db;User Id=root_pl@libaryv2dbserver;Password=@dmin_PL"));
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 

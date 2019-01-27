@@ -19,7 +19,9 @@ namespace Library.Controllers
         {
             if (!User.Identity.IsAuthenticated)
                 return RedirectToAction("Login", "Identity/Account");
-            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).First().Id;
+            var userId = _context.Users.Where(x => x.Email == User.Identity.Name).Select(x => x.Id).FirstOrDefault();
+            if (userId == null)
+                return RedirectToAction("Login", "Identity/Account");
             var books = _context.Books
                 .Where(x => !x.IsDeleted && x.UserId == userId)
                 .Select(x => new BookDto
@@ -28,7 +30,8 @@ namespace Library.Controllers
                     Author = x.Author,
                     Description = x.Description,
                     Name = x.Name,
-                    Status = x.BookLendings.Any(l => !l.DateTo.HasValue) ? "Wypożyczona" : "Nie wypożyczona"
+                    Status = x.BookLendings.Any(l => !l.DateTo.HasValue) ? "Wypożyczona" : "Nie wypożyczona",
+                    AvailableToDelete = !x.BookLendings.Any(l => !l.DateTo.HasValue)
                 }).ToList();
             return View(books);
         }
@@ -92,7 +95,7 @@ namespace Library.Controllers
             var lending = _context.BookLendings.Where(x => x.BookId == id).First();
             lending.DateTo = DateTime.Now;
             _context.SaveChanges();
-            return Ok();
+            return RedirectToAction("Index");
         }
     }
 }
